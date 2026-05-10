@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
-from telegram_handler import TelegramHandler
+from src.utils.logger.telegram_handler import TelegramHandler
 
 
 # ===== CREATE LOG DIRECTORY =====
