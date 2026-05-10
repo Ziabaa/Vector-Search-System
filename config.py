@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from AiApi.AiModels.models import AiModels
-
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
@@ -29,6 +27,13 @@ class DataBaseConfig(BaseSystemSettings):
     database: str = Field(validation_alias="DB_DATABASE")
 
 
+class WeaviateConfig(BaseSystemSettings):
+    host: str = Field(validation_alias="VECTOR_HTTP_HOST")
+    port: str = Field(validation_alias="VECTOR_HTTP_PORT")
+    grpc_port: str = Field(validation_alias="VECTOR_GRPC_PORT")
+    grpc_host: str = Field(validation_alias="VECTOR_GRPC_HOST")
+
+
 class TelegramLoggingConfig(BaseSystemSettings):
     bot_token: str = Field(validation_alias="TELEGRAM_LOGGER_BOT_TOKEN")
     chat_id: str = Field(validation_alias="TELEGRAM_LOGGER_BOT_CHAT")
@@ -45,6 +50,7 @@ class AuthorisationConfig(BaseSystemSettings):
 class Settings(BaseSystemSettings):
     api: ApiConfig = Field(default_factory=ApiConfig)
     database: DataBaseConfig = Field(default_factory=DataBaseConfig)
+    weaviate: WeaviateConfig = Field(default_factory=WeaviateConfig)
     telegram_logging: TelegramLoggingConfig = Field(default_factory=TelegramLoggingConfig)
     ai_providers: AiProvidersConfig = Field(default_factory=AiProvidersConfig)
     authorisation: AuthorisationConfig = Field(default_factory=AuthorisationConfig)
