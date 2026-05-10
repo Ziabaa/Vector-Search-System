@@ -1,18 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
 
+from api.default.routes import default_router
+from src.api.weaviate.routes import weaviate_router
+
 app = FastAPI()
 
+app.include_router(default_router)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/echo")
-def read_root(message: str):
-    return {"echo": message}
-
+app.include_router(weaviate_router)
 
 if __name__ == '__main__':
     uvicorn.run("app:app", port=8080)
