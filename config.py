@@ -45,6 +45,8 @@ class AiProvidersConfig(BaseSystemSettings):
 
 class AuthorisationConfig(BaseSystemSettings):
     WEAVIATE_AUTHORISATION_KEY: str = Field(validation_alias="WEAVIATE_AUTHORISATION_KEY")
+    SERPAPI_KEY: str = Field(validation_alias="SERPAPI_KEY")
+    OPEN_WEATHER_MAP_KEY: str = Field(validation_alias="OPEN_WEATHER_MAP_KEY")
 
 
 class Settings(BaseSystemSettings):
