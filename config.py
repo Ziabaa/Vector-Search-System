@@ -29,6 +29,11 @@ class DataBaseConfig(BaseSystemSettings):
     database: str = Field(validation_alias="DB_DATABASE")
 
 
+class TelegramLoggingConfig(BaseSystemSettings):
+    bot_token: str = Field(validation_alias="TELEGRAM_LOGGER_BOT_TOKEN")
+    chat_id: str = Field(validation_alias="TELEGRAM_LOGGER_BOT_CHAT")
+
+
 class AiProvidersConfig(BaseSystemSettings):
     openai_key: str = Field(validation_alias="OPENAI_API_KEY")
 
@@ -40,6 +45,7 @@ class AuthorisationConfig(BaseSystemSettings):
 class Settings(BaseSystemSettings):
     api: ApiConfig = Field(default_factory=ApiConfig)
     database: DataBaseConfig = Field(default_factory=DataBaseConfig)
+    telegram_logging: TelegramLoggingConfig = Field(default_factory=TelegramLoggingConfig)
     ai_providers: AiProvidersConfig = Field(default_factory=AiProvidersConfig)
     authorisation: AuthorisationConfig = Field(default_factory=AuthorisationConfig)
 
