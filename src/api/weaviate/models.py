@@ -26,3 +26,8 @@ class UpdateVectorRequest(BaseModel):
     tool_name: str | None = None
     description: str | None = None
     trigger_phrases: list[str] | None = None
+
+
+class SearchRequest(BaseModel):
+    query: str
+    limit: int | None = None

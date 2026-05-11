@@ -8,6 +8,7 @@ from src.api.weaviate.models import (
     UpdateVectorRequest,
     VectorResponse,
     VectorsResponse,
+    SearchRequest,
 )
 from src.vector.tools_repository import ToolRepository, ToolModel
 from src.utils.statuses import Status
@@ -99,3 +100,19 @@ async def update_vector(uuid: str, request: UpdateVectorRequest):
         raise HTTPException(status_code=404, detail=f"Vector with UUID {uuid} not found")
 
     return VectorResponse(data=result)
+
+
+@weaviate_router.post("/search", response_model=VectorsResponse)
+async def search_vectors(request: SearchRequest):
+    result = tool_repo.search(query=request.query, limit=request.limit)
+
+    if isinstance(result, Status):
+        if result == Statuses.not_found():
+            raise HTTPException(status_code=404, detail=result.message)
+        if result == Statuses.error():
+            raise HTTPException(status_code=400, detail=result.message)
+        raise HTTPException(status_code=500, detail=result.message)
+
+    if result is None:
+        return VectorsResponse(data=[], count=0)
+    return VectorsResponse(data=result, count=len(result))

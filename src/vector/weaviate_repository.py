@@ -177,6 +177,7 @@ class WeaviateRepository(BaseRepository[T], Generic[T]):
             except AttributeError as e:
                 if "success" in str(e):
                     return Statuses.success()
+                return Statuses.not_found(str(e))
             except Exception as e:
                 return Statuses.error(str(e))
 
@@ -208,6 +209,8 @@ class WeaviateRepository(BaseRepository[T], Generic[T]):
                             created_object = self._from_dict(obj.properties)
                             if hasattr(created_object, "score"):
                                 created_object.score = obj.metadata.score
+                            if hasattr(created_object, "uuid"):
+                                created_object.uuid = obj.uuid
                             list_objects.append(created_object)
                     return list_objects
                 except WeaviateQueryError as e:

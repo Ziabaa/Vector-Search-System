@@ -33,8 +33,8 @@ class ToolModel(BaseModel):
 
 class ToolRepository(WeaviateRepository[ToolModel]):
     COLLECTION = "ToolSearch"
-    SEARCH_ALPHA = 0.35
-    MINIMAL_SCORE = 0.9
+    SEARCH_ALPHA = 0.7
+    MINIMAL_SCORE = 0.5
 
     def __init__(self) -> None:
         super().__init__(ToolModel, self.COLLECTION)
