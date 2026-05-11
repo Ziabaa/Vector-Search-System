@@ -1,5 +1,9 @@
-from ai.gpt_client import GptClient
-from services.models import ProgramResponse, FoundedTool
+import json
+from functools import wraps
+
+from src.ai.gpt_client import GptClient
+from src.db.program.db import ProgramDb
+from src.services.models import ProgramResponse, FoundedTool
 from src.functions.base.tool import BaseTool
 from src.functions.get_weather import GetWeather
 from src.functions.google_search import GoogleSearch
@@ -15,7 +19,35 @@ class Program:
             "GetUahRates": GetUahRates,
         }
         self.ai_client = GptClient()
+        self.db = ProgramDb()
 
+    @staticmethod
+    def _save_to_db(func):
+        @wraps(func)
+        def wrapper(self, query: str, *args, **kwargs) -> ProgramResponse:
+            request_id = self.db.create_request(message=query)
+
+            response: ProgramResponse = func(self, query, *args, **kwargs)
+
+            functions = [
+                {
+                    "name": tool.name,
+                    "params": json.dumps(tool.params, ensure_ascii=False),
+                }
+                for tool in (response.founded_functions or [])
+            ]
+
+            self.db.create_response(
+                request_id=request_id,
+                message=response.answer or "",
+                functions=functions,
+            )
+
+            return response
+
+        return wrapper
+
+    @_save_to_db
     def get_answer(self, query: str) -> ProgramResponse:
         response = ProgramResponse()
         tools = self.get_functions(query)
@@ -51,7 +83,7 @@ class Program:
                 FoundedTool(
                     name=tool.name,
                     params={p.name: p.value for p in tool.params},
-                )
+                ),
             )
 
             answer = self.ai_client.ask_llm_for_final_answer(

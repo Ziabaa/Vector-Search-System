@@ -45,14 +45,19 @@ class BaseDb:
         with self._get_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(query, params or ())
-                return cursor.fetchone()
+                result = cursor.fetchone()
+                connection.commit()
+                return result
 
-    def fetch_all(
+    def execute_many(
             self,
             query: str,
-            params: Optional[tuple] = None,
-    ) -> list[dict]:
+            params: list[tuple],
+    ) -> None:
+        if not params:
+            return
+
         with self._get_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query, params or ())
-                return cursor.fetchall()
+                cursor.executemany(query, params)
+                connection.commit()
