@@ -33,3 +33,7 @@ class BaseTool(ABC):
             if param.value is None:
                 return False
         return True
+
+    def clear_params(self):
+        for param in self.params:
+            param.value = None

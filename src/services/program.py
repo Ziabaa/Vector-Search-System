@@ -95,6 +95,8 @@ class Program:
             final_answers.append(answer)
 
         response.answer = "\n\n".join(final_answers)
+        for tool in tools:
+            tool.clear_params()
         return response
 
     def get_functions(self, query: str, limit: int = 2) -> list[BaseTool]:
