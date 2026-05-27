@@ -53,10 +53,10 @@ class Program:
         tools = self.get_functions(query)
 
         if not tools:
-            response.answer = "Я не нашёл подходящих инструментов для запроса."
+            response.answer = "Я не знайшов функцій для формування відповіді."
             return response
 
-        final_answers = []
+        executed_functions_results = []
 
         for tool in tools:
             if not tool.can_execute:
@@ -86,15 +86,14 @@ class Program:
                 ),
             )
 
-            answer = self.ai_client.ask_llm_for_final_answer(
-                user_query=query,
-                function_name=tool.name,
-                function_result=tool_result,
-            )
+            executed_functions_results.append(tool.name + ": " + tool_result)
 
-            final_answers.append(answer)
+        answer = self.ai_client.ask_llm_for_final_answer(
+            user_query=query,
+            functions_results="\n".join(executed_functions_results),
+        )
 
-        response.answer = "\n\n".join(final_answers)
+        response.answer = answer
         for tool in tools:
             tool.clear_params()
         return response

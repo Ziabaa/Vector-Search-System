@@ -45,8 +45,7 @@ class GptClient:
     def ask_llm_for_final_answer(
             self,
             user_query: str,
-            function_name: str,
-            function_result: str,
+            functions_results: str,
     ) -> str:
         prompt = f"""
         You are an assistant that explains results of function execution.
@@ -54,11 +53,8 @@ class GptClient:
         User request:
         {user_query}
 
-        Function used:
-        {function_name}
-
-        Function result:
-        {json.dumps(function_result, ensure_ascii=False, indent=2)}
+        Function execution results:
+        {functions_results}
 
         Rules:
         - Always respond in Ukrainian
