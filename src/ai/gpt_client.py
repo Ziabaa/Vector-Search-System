@@ -12,21 +12,26 @@ class GptClient:
 
     def ask_llm_for_params(self, function_name: str, params: str, user_message: str) -> dict:
         prompt = f"""
-        You are a function parameter filler.
-        
+        You are a strict function parameter filler. 
+
+        Your core task is to extract and clean search queries from the user message, NOT to interpret or expand them.
+
+        CRITICAL RULES:
+        1. DO NOT expand, decode, or translate abbreviations or acronyms (e.g., keep "ХПИ" as "ХПИ", "КНУ" as "КНУ"). Leave them exactly as written.
+        2. Stopwords removal: Remove ONLY conversational filler words, polite phrases, and search commands that carry no semantic value (e.g., "найди", "что такое", "пожалуйста", "знайди що таке", "пошукай").
+        3. Keep the core intent: Preserve all keywords, names, and specific terms exactly in the language and form the user provided.
+
         User message: {user_message}
-        
+
         Function: {function_name}
-        
-        Fill missing parameters with best possible values.
-        
+
         Return ONLY valid JSON in format:
         {{
           "params": {{
             "param_name": "value"
           }}
         }}
-        
+
         Parameters to fill:
         {params}
         """

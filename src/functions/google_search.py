@@ -80,6 +80,7 @@ class GoogleSearch(BaseTool):
             lines.append(f"Заголовок: {item['title']}")
             lines.append(f"Посилання: {item['link']}")
             lines.append(f"Текст:\n{item['snippet']}")
+            lines.append(f"При формуванні відповіді обов'язково надати одне посилання на інформацію.")
             lines.append("")
 
         return "\n".join(lines)
